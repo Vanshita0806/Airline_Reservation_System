@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Flights</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Flights</h1>
+        <form id="searchForm">
+            <label for="source">From:</label>
+            <select id="source" name="source">
+                {% for src in sources %}
+                    <option value="{{ src }}">{{ src }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="destination">To:</label>
+            <select id="destination" name="destination">
+                {% for dest in destinations %}
+                    <option value="{{ dest }}">{{ dest }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" min="{{ min_date }}" max="{{ max_date }}" required>
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="results"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

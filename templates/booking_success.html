@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmed</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='booking_success.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Booking Confirmed</h2>
+        <div class="info">
+            <p><strong>Name:</strong> {{ name }}</p>
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Flight Number:</strong> {{ flight_number }}</p>
+            <p><strong>Departure Date:</strong> {{ departure_date }}</p>
+            <p><strong>Seat Number:</strong> {{ seat }}</p>
+            <p><strong>Price:</strong> ₹{{ price }}</p>
+        </div>
+        <div class="btn-download">
+            <a href="{{ url_for('download_ticket', name=name, email=email, seat=seat, flight_number=flight_number, departure_date=departure_date, price=price) }}">
+                Download Ticket (PDF)
+            </a>
+        </div>
+    </div>
+</body>
+</html>
