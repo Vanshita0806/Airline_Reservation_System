@@ -34,3 +34,32 @@ CREATE TABLE flight_price (
     price DECIMAL(10,2),
     FOREIGN KEY (flight_id) REFERENCES flight_schedule(id)
 );
+
+INSERT INTO flight_price (flight_id, price)
+SELECT id, FLOOR(4000 + (RAND() * 4000))
+FROM flight_schedule;
+
+SELECT * FROM flight_price LIMIT 10;
+
+SELECT COUNT(*) FROM flight_price;
+SELECT COUNT(*) FROM flight_schedule;
+
+SELECT * FROM passenger;
+Select * FROM booking;
+
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM booking;
+DELETE FROM passenger;
+
+ALTER TABLE passenger ADD UNIQUE (email);
+ALTER TABLE passenger ADD UNIQUE (phone);
+
+ALTER TABLE booking ADD COLUMN departure_date DATE;
+SELECT * FROM booking;
+DELETE FROM booking;
+
+
+
+
+

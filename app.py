@@ -105,8 +105,8 @@ def book():
 
     cursor.execute("""
         SELECT seat_number FROM booking 
-        WHERE flight_id = %s
-    """, (flight_id,))
+        WHERE flight_id = %s AND departure_date = %s
+    """, (flight_id,departure_date))
     booked = [row[0] for row in cursor.fetchall()]
     
     available_seats = list(set(total_seats) - set(booked))
@@ -162,9 +162,9 @@ def confirm_booking():
     passenger_id = cursor.lastrowid
 
     cursor.execute("""
-        INSERT INTO booking (passenger_id, flight_id, booking_date, seat_number, price, status)
-        VALUES (%s, %s, CURDATE(), %s, %s, 'Confirmed')
-    """, (passenger_id, flight_id, seat_number, price))
+        INSERT INTO booking (passenger_id, flight_id, booking_date, seat_number, price, status, departure_date)
+        VALUES (%s, %s, CURDATE(), %s, %s, 'Confirmed', %s)
+    """, (passenger_id, flight_id, seat_number, price, departure_date))
 
     conn.commit()
     conn.close()
