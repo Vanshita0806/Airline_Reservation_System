@@ -33,13 +33,13 @@ document.getElementById('searchForm').addEventListener('submit', async function 
                 Departure: ${depValid ? depTime.toLocaleDateString() + ' at ' + depTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Invalid Date'}<br>
                 Arrival: ${arrValid ? arrTime.toLocaleDateString() + ' at ' + arrTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Invalid Date'}<br>
                 Price: ₹${flight.price}<br>
-                <button onclick="bookFlight('${flight.flight_number}', '${flight.departure_date}', '${flight.price}')">Book</button>
+                <button onclick="bookFlight('${flight.flight_number}','${flight.airline}', '${flight.origin}', '${flight.destination}', '${flight.departure_date}', '${flight.price}')">Book</button>
                 <hr>`;
             resultDiv.appendChild(div);
         });
     }
 });
 
-function bookFlight(flightNumber, departureDate, price) {
-    window.location.href = `/book?flightNumber=${flightNumber}&departureDate=${departureDate}&price=${price}`;
+function bookFlight(flightNumber,airline, origin, destination, departureDate, price) {
+    window.location.href = `/book?flightNumber=${flightNumber}&airline=${airline}&origin=${origin}&destination=${destination}&departureDate=${departureDate}&price=${price}`;
 }

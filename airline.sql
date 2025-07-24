@@ -59,6 +59,16 @@ ALTER TABLE booking ADD COLUMN departure_date DATE;
 SELECT * FROM booking;
 DELETE FROM booking;
 
+ALTER TABLE passenger DROP INDEX email, DROP INDEX phone;
+ALTER TABLE passenger ADD COLUMN password VARCHAR(100);
+
+ALTER TABLE booking 
+ADD CONSTRAINT unique_user_flight_date 
+UNIQUE (passenger_id, flight_id, departure_date);
+
+SELECT * FROM passenger;
+SELECT * FROM booking;
+
 
 
 

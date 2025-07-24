@@ -88,6 +88,9 @@ def search_flights():
 @app.route('/book')
 def book():
     flight_number = request.args.get('flightNumber')
+    airline = request.args.get('airline')
+    origin = request.args.get('origin')
+    destination = request.args.get('destination')
     departure_date = request.args.get('departureDate')
     price = request.args.get('price')
 
@@ -116,6 +119,9 @@ def book():
 
     return render_template("book.html", 
         flight_number=flight_number,
+        airline = airline,
+        origin = origin,
+        destination = destination,
         departure_date=departure_date,
         price=price,
         available_seats=available_seats
@@ -126,8 +132,12 @@ def confirm_booking():
     name = request.form['name']
     email = request.form['email']
     phone = request.form['phone']
+    password = request.form['password']
     seat_number = request.form['seat_number']
     flight_number = request.form['flight_number']
+    airline = request.form['airline']
+    origin = request.form['origin']
+    destination = request.form['destination']
     departure_date = request.form['departure_date']
     price = request.form['price']
 
@@ -142,34 +152,42 @@ def confirm_booking():
     """, (flight_number, departure_date))
     flights = cursor.fetchone()
     flight_id = flights[0]
+
+    cursor.execute("SELECT id FROM passenger WHERE email = %s AND phone = %s", (email, phone))
+    passenger = cursor.fetchone()
+    
+    if not passenger:
+        cursor.execute("INSERT INTO passenger (name, email, phone, password) VALUES (%s, %s, %s, %s)",
+                       (name, email, phone, password))
+        passenger_id = cursor.lastrowid
+    else:
+        passenger_id = passenger[0]
+
+    cursor.execute("""
+        SELECT id FROM booking 
+        WHERE passenger_id = %s AND flight_id = %s AND departure_date = %s
+    """, (passenger_id, flight_id, departure_date))
+    if cursor.fetchone():
+        conn.close()
+        return "You have already booked this flight for this date!"
     
     cursor.execute("""
         SELECT id FROM booking 
-        WHERE flight_id = %s AND seat_number = %s
-    """, (flight_id, seat_number))
+        WHERE flight_id = %s AND departure_date = %s AND seat_number = %s
+    """, (flight_id, departure_date , seat_number))
     if cursor.fetchone():
         conn.close()
         return "Seat already booked! Please select another seat."
-    
-    cursor.execute("SELECT id FROM passenger WHERE email = %s OR phone = %s", (email, phone))
-    existing = cursor.fetchone()
-
-    if existing:
-        conn.close()
-        return "Email or phone already registered!"
-    
-    cursor.execute("INSERT INTO passenger (name, email, phone) VALUES (%s, %s, %s)", (name, email, phone))
-    passenger_id = cursor.lastrowid
 
     cursor.execute("""
         INSERT INTO booking (passenger_id, flight_id, booking_date, seat_number, price, status, departure_date)
-        VALUES (%s, %s, CURDATE(), %s, %s, 'Confirmed', %s)
-    """, (passenger_id, flight_id, seat_number, price, departure_date))
+        VALUES (%s, %s, %s - INTERVAL 10 DAY, %s, %s, 'Confirmed', %s)
+    """, (passenger_id, flight_id, departure_date, seat_number, price, departure_date))
 
     conn.commit()
     conn.close()
 
-    return render_template('booking_success.html', name=name, email=email, seat=seat_number, flight_number=flight_number, departure_date=departure_date, price=price)
+    return render_template('booking_success.html', name=name, email=email, seat=seat_number, flight_number=flight_number, airline=airline, origin=origin, destination=destination, departure_date=departure_date, price=price)
 
 
 @app.route('/download_ticket')
@@ -178,6 +196,9 @@ def download_ticket():
     email = request.args.get('email')
     seat = request.args.get('seat')
     flight_number = request.args.get('flight_number')
+    airline = request.args.get('airline')
+    origin = request.args.get('origin')
+    destination = request.args.get('destination')
     departure_date = request.args.get('departure_date')
     price = request.args.get('price')
 
@@ -187,6 +208,9 @@ def download_ticket():
     <p style ="font-size: 20px;"><strong>Name:</strong> {name}</p>
     <p style ="font-size: 20px;"><strong>Email:</strong> {email}</p>
     <p style ="font-size: 20px;"><strong>Flight Number:</strong> {flight_number}</p>
+    <p style ="font-size: 20px;"><strong>Airline:</strong> {airline}</p>
+    <p style ="font-size: 20px;"><strong>Origin:</strong> {origin}</p>
+    <p style ="font-size: 20px;"><strong>Destination:</strong> {destination}</p>
     <p style ="font-size: 20px;"><strong>Departure Date:</strong> {departure_date}</p>
     <p style ="font-size: 20px;"><strong>Seat Number:</strong> {seat}</p>
     <p style ="font-size: 20px;"><strong>Price:</strong> ₹{price}</p>
