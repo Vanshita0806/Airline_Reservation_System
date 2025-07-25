@@ -5,6 +5,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="login">
+        <button id="user_login">View/Cancel Ticket</button>
+        <div id="loginModal" style="display:none;">
+            <form id="loginForm" action ="/login" method="POST">
+            <label>Email:</label>
+            <input type="email" name="email" required><br>
+            <label>Phone:</label>
+            <input type="tel" name="phone" pattern="[0-9]{10}" required><br>
+            <label>Password:</label>
+            <input type="password" name="password" required><br>
+            <button type="submit">Proceed</button>
+            </form>
+        </div>
+    </div>
     <div class="container">
         <h1>Search Flights</h1>
         <form id="searchForm">

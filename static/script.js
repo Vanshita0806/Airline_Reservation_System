@@ -43,3 +43,8 @@ document.getElementById('searchForm').addEventListener('submit', async function 
 function bookFlight(flightNumber,airline, origin, destination, departureDate, price) {
     window.location.href = `/book?flightNumber=${flightNumber}&airline=${airline}&origin=${origin}&destination=${destination}&departureDate=${departureDate}&price=${price}`;
 }
+
+let loginBtn = document.querySelector("#user_login");
+loginBtn.addEventListener("click",()=>{
+    document.getElementById("loginModal").style.display = "block";
+});

@@ -229,6 +229,39 @@ def download_ticket():
     response.headers['Content-Disposition'] = 'attachment; filename=ticket.pdf'
     return response
 
+@app.route('/login', methods = ['POST'])
+def login():
+    email = request.form['email']
+    phone = request.form['phone']
+    password = request.form['password']
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary = True)
+    cursor.execute("""
+        SELECT id, name FROM passenger 
+        WHERE email = %s AND phone = %s AND password = %s
+    """, (email, phone, password))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return "Invalid login details. Please go back and try again."
+
+    passenger_id = user['id']
+
+    cursor.execute("""
+        SELECT b.id AS booking_id, b.seat_number, b.departure_date, b.price,
+               fs.flightNumber, fs.airline, fs.origin, fs.destination
+        FROM booking b
+        JOIN flight_schedule fs ON b.flight_id = fs.id
+        WHERE b.passenger_id = %s
+        ORDER BY b.departure_date DESC
+    """, (passenger_id,))
+    bookings = cursor.fetchall()
+
+    conn.close()
+    return render_template("dashboard.html", bookings=bookings, name=user['name'], email=email)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
