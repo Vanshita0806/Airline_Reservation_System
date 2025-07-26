@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h2>Welcome, {{ name }}!</h2>
+    <p>Email: {{ email }}</p>
+
+    <h3>Your Bookings:</h3>
+
+    {% if bookings %}
+        <table>
+            <tr>
+                <th>Flight</th>
+                <th>Passenger ID</th>
+                <th>Airline</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure Date</th>
+                <th>Seat Number</th>
+                <th>Price</th>
+                <th>Booking Date</th>
+                <th>Status</th>
+                <th>Cancelled At</th>
+                <th>Download Ticket</th>
+                <th>Cancel Booking</th>
+            </tr>
+            {% for b in bookings %}
+            <tr>
+                <td>{{ b.flightNumber }}</td>
+                <td>{{ b.passenger_id}}</td>
+                <td>{{ b.airline }}</td>
+                <td>{{ b.origin }}</td>
+                <td>{{ b.destination }}</td>
+                <td>{{ b.departure_date }}</td>
+                <td>{{ b.seat_number }}</td>
+                <td>₹{{ b.price }}</td>
+                <td>{{ b.booking_date }}</td>
+                <td>
+                    {% if b.status == 'Canceled' %}
+                        <span style="color: red;">Canceled</span>
+                    {% else %}
+                        <span style="color: green;">Confirmed</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ b.canceled_at if b.canceled_at else "  -  " }}
+                </td>
+
+                <td>
+                    {% if b.status != 'Canceled' %}
+                    <a class="action-btn download" 
+                    href="/download_ticket?name={{ name }}&email={{ email }}&seat={{ b.seat_number }}&flight_number={{ b.flightNumber }}&airline={{ b.airline }}&origin={{ b.origin }}&destination={{ b.destination }}&departure_date={{ b.departure_date }}&price={{ b.price }}">
+                    Download
+                    </a>
+                    {% else %}
+                    <span style="color: gray;">  -  </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if b.status != 'Canceled' %}
+                    <a class="action-btn cancel" 
+                    href="/cancel_booking?booking_id={{ b.booking_id }}" 
+                    onclick="return confirm('Are you sure you want to cancel this booking?');">
+                    Cancel
+                    </a>
+                    {% else %}
+                    <span style="color: gray;">  -  </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>You have not booked any flights yet.</p>
+    {% endif %}
+
+</body>
+</html>

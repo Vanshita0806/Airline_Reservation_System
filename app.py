@@ -250,7 +250,7 @@ def login():
     passenger_id = user['id']
 
     cursor.execute("""
-        SELECT b.id AS booking_id, b.seat_number, b.departure_date, b.price,
+        SELECT b.id AS booking_id, b.passenger_id, b.seat_number, b.departure_date, b.price, b.booking_date, b.canceled_at, b.status,
                fs.flightNumber, fs.airline, fs.origin, fs.destination
         FROM booking b
         JOIN flight_schedule fs ON b.flight_id = fs.id
@@ -261,6 +261,23 @@ def login():
 
     conn.close()
     return render_template("dashboard.html", bookings=bookings, name=user['name'], email=email)
+
+@app.route('/cancel_booking')
+def cancel_booking():
+    booking_id = request.args.get('booking_id', type=int)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE booking 
+        SET status = 'Canceled', canceled_at = NOW() 
+        WHERE id = %s
+    """, (booking_id,))
+
+    conn.commit()
+    conn.close()
+    return "Booking cancelled. Please go back and refresh the dashboard."
 
 
 if __name__ == '__main__':
