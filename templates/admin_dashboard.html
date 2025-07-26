@@ -29,6 +29,7 @@
             <td>{{ f.destination }}</td>
             <td>{{ f.validFrom }}</td>
             <td>{{ f.validTo }}</td>
+            <td>{{ f.price if f.price else 'N/A' }}</td>
             <td>
                 <a href="/admin/edit_flight/{{ f.id }}">
                 <button type="button">Edit</button>

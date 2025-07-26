@@ -11,6 +11,7 @@ df['scheduledDepartureTime'] = df['scheduledDepartureTime'].apply(lambda x: date
 df['scheduledArrivalTime'] = df['scheduledArrivalTime'].apply(lambda x: datetime.strptime(x, "%H:%M:%S").time())
 df['validFrom'] = pd.to_datetime(df['validFrom']).dt.date
 df['validTo'] = pd.to_datetime(df['validTo']).dt.date
+df.drop_duplicates(inplace=True)
 
 print(df.head())
 print(df.info())

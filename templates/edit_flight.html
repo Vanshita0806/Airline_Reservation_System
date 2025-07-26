@@ -11,5 +11,6 @@
     <input type="datetime-local" name="scheduledArrivalTime" value="{{ flight.scheduledArrivalTime|replace(' ', 'T') }}"><br>
     Valid From: <input type="date" name="validFrom" value="{{ flight.validFrom }}"><br>
     Valid To: <input type="date" name="validTo" value="{{ flight.validTo }}"><br>
+    Price: <input type="number" name="price" value="{{ flight.price }}"><br>
     <input type="submit" value="Update Flight">
 </form>

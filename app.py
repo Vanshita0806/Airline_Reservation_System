@@ -229,38 +229,45 @@ def download_ticket():
     response.headers['Content-Disposition'] = 'attachment; filename=ticket.pdf'
     return response
 
-@app.route('/login', methods = ['POST'])
+@app.route('/user/login', methods = ['GET','POST'])
 def login():
-    email = request.form['email']
-    phone = request.form['phone']
-    password = request.form['password']
+    if request.method == 'POST':
+        email = request.form['email']
+        phone = request.form['phone']
+        password = request.form['password']
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary = True)
-    cursor.execute("""
-        SELECT id, name FROM passenger 
-        WHERE email = %s AND phone = %s AND password = %s
-    """, (email, phone, password))
-    user = cursor.fetchone()
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary = True)
+        cursor.execute("""
+            SELECT id, name FROM passenger 
+            WHERE email = %s AND phone = %s AND password = %s
+        """, (email, phone, password))
+        user = cursor.fetchone()
 
-    if not user:
+        if not user:
+            conn.close()
+            return "Invalid login details. Please go back and try again."
+
+        passenger_id = user['id']
+
+        cursor.execute("""
+            SELECT b.id AS booking_id, b.passenger_id, b.seat_number, b.departure_date, b.price, b.booking_date, b.canceled_at, b.status,
+                fs.flightNumber, fs.airline, fs.origin, fs.destination
+            FROM booking b
+            JOIN flight_schedule fs ON b.flight_id = fs.id
+            WHERE b.passenger_id = %s
+            ORDER BY b.departure_date DESC
+        """, (passenger_id,))
+        bookings = cursor.fetchall()
+
         conn.close()
-        return "Invalid login details. Please go back and try again."
-
-    passenger_id = user['id']
-
-    cursor.execute("""
-        SELECT b.id AS booking_id, b.passenger_id, b.seat_number, b.departure_date, b.price, b.booking_date, b.canceled_at, b.status,
-               fs.flightNumber, fs.airline, fs.origin, fs.destination
-        FROM booking b
-        JOIN flight_schedule fs ON b.flight_id = fs.id
-        WHERE b.passenger_id = %s
-        ORDER BY b.departure_date DESC
-    """, (passenger_id,))
-    bookings = cursor.fetchall()
-
-    conn.close()
-    return render_template("dashboard.html", bookings=bookings, name=user['name'], email=email)
+        session['user_logged_in'] = True
+        session['user_id'] = user['id']
+        session['user_name'] = user['name']
+        session['user_email'] = email
+        return render_template("dashboard.html", bookings=bookings, name=user['name'], email=email)
+    else:
+        return render_template('user_login.html')
 
 @app.route('/cancel_booking')
 def cancel_booking():
@@ -307,7 +314,10 @@ def admin_dashboard():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM flight_schedule")
+    cursor.execute("""
+        SELECT fs.*, fp.price 
+        FROM flight_schedule fs
+        LEFT JOIN flight_price fp ON fs.id = fp.flight_id""")
     flights = cursor.fetchall()
 
     cursor.execute("SELECT * FROM passenger")
@@ -327,7 +337,14 @@ def admin_logout():
 @app.route('/admin/add_flight', methods=['GET', 'POST'])
 def add_flight():
     if request.method == 'POST':
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT MAX(id) FROM flight_schedule")
+        max_id = cursor.fetchone()[0] or 0
+        next_id = max_id + 1
+
         data = (
+            next_id,
             request.form['flightNumber'],
             request.form['airline'],
             request.form['origin'],
@@ -336,16 +353,19 @@ def add_flight():
             request.form['scheduledDepartureTime'],
             request.form['scheduledArrivalTime'],
             request.form['validFrom'],
-            request.form['validTo']
+            request.form['validTo'],
         )
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        price = request.form['price']
         cursor.execute("""
             INSERT INTO flight_schedule 
-            (flightNumber, airline, origin, destination, dayOfWeek, scheduledDepartureTime, scheduledArrivalTime, validFrom, validTo)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            (id, flightNumber, airline, origin, destination, dayOfWeek, scheduledDepartureTime, scheduledArrivalTime, validFrom, validTo)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, data)
+
+        cursor.execute("""
+            INSERT INTO flight_price(flight_id, price) VALUES(%s, %s)
+            """,(next_id,price))
         conn.commit()
         conn.close()
         return redirect('/admin/dashboard')
@@ -377,6 +397,9 @@ def edit_flight(flight_id):
                 validFrom=%s, validTo=%s
             WHERE id=%s
         """, data)
+        cursor.execute("""
+            UPDATE flight_price SET price = %s WHERE flight_id = %s
+            """, (request.form['price'], flight_id))
         conn.commit()
         conn.close()
         return redirect('/admin/dashboard')
