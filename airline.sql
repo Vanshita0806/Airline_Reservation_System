@@ -69,6 +69,18 @@ UNIQUE (passenger_id, flight_id, departure_date);
 SELECT * FROM passenger;
 SELECT * FROM booking;
 
+ALTER TABLE booking ADD COLUMN canceled_at DATETIME DEFAULT NULL;
+
+CREATE TABLE admin (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(100)
+);
+
+INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
+
+
+
 
 
 

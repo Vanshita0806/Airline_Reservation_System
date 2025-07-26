@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 6px; }
+        h2 { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <a href="/admin/logout">
+        <button type="button">Logout</button>
+    </a>
+
+    <h2>All Flights</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Flight Number</th><th>Airline</th><th>Origin</th><th>Destination</th>
+            <th>Valid From</th><th>Valid To</th><th>Actions</th>
+        </tr>
+        {% for f in flights %}
+        <tr>
+            <td>{{ f.id }}</td>
+            <td>{{ f.flightNumber }}</td>
+            <td>{{ f.airline }}</td>
+            <td>{{ f.origin }}</td>
+            <td>{{ f.destination }}</td>
+            <td>{{ f.validFrom }}</td>
+            <td>{{ f.validTo }}</td>
+            <td>
+                <a href="/admin/edit_flight/{{ f.id }}">
+                <button type="button">Edit</button>
+                </a>
+    
+                <form method="POST" action="/admin/delete_flight/{{ f.id }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this flight?');">
+                <button type="submit">Delete</button>
+                </form>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/admin/add_flight">
+        <button type="button">Add New Flight</button>
+    </a>
+
+    <h2>All Passengers</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Email</th><th>Phone</th>
+        </tr>
+        {% for p in passengers %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.phone }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>All Bookings</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Passenger ID</th><th>Flight ID</th><th>Seat</th><th>Price</th>
+            <th>Status</th><th>Booked On</th><th>Cancelled At</th>
+        </tr>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.id }}</td>
+            <td>{{ b.passenger_id }}</td>
+            <td>{{ b.flight_id }}</td>
+            <td>{{ b.seat_number }}</td>
+            <td>{{ b.price }}</td>
+            <td>{{ b.status }}</td>
+            <td>{{ b.booking_date }}</td>
+            <td>{{ b.canceled_at or '—' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

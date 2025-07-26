@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, url_for, redirect
 import mysql.connector
 from datetime import date, time, datetime, timedelta
 from decimal import Decimal
@@ -279,6 +279,123 @@ def cancel_booking():
     conn.close()
     return "Booking cancelled. Please go back and refresh the dashboard."
 
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM admin WHERE username = %s AND password = %s", (username, password))
+        admin = cursor.fetchone()
+        conn.close()
+
+        if admin:
+            session['admin_logged_in'] = True
+            return redirect('/admin/dashboard')
+        else:
+            return "Invalid admin login credentials."
+
+    return render_template('admin_login.html')
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if not session.get('admin_logged_in'):
+        return redirect('/admin/login')
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM flight_schedule")
+    flights = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM passenger")
+    passengers = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM booking")
+    bookings = cursor.fetchall()
+
+    conn.close()
+    return render_template("admin_dashboard.html", flights=flights, passengers=passengers, bookings=bookings)
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect('/admin/login')
+
+@app.route('/admin/add_flight', methods=['GET', 'POST'])
+def add_flight():
+    if request.method == 'POST':
+        data = (
+            request.form['flightNumber'],
+            request.form['airline'],
+            request.form['origin'],
+            request.form['destination'],
+            request.form['dayOfWeek'],
+            request.form['scheduledDepartureTime'],
+            request.form['scheduledArrivalTime'],
+            request.form['validFrom'],
+            request.form['validTo']
+        )
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO flight_schedule 
+            (flightNumber, airline, origin, destination, dayOfWeek, scheduledDepartureTime, scheduledArrivalTime, validFrom, validTo)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, data)
+        conn.commit()
+        conn.close()
+        return redirect('/admin/dashboard')
+
+    return render_template('add_flight.html')
+
+@app.route('/admin/edit_flight/<int:flight_id>', methods=['GET', 'POST'])
+def edit_flight(flight_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == 'POST':
+        data = (
+            request.form['flightNumber'],
+            request.form['airline'],
+            request.form['origin'],
+            request.form['destination'],
+            request.form['dayOfWeek'],
+            request.form['scheduledDepartureTime'],
+            request.form['scheduledArrivalTime'],
+            request.form['validFrom'],
+            request.form['validTo'],
+            flight_id
+        )
+        cursor.execute("""
+            UPDATE flight_schedule 
+            SET flightNumber=%s, airline=%s, origin=%s, destination=%s,
+                dayOfWeek=%s, scheduledDepartureTime=%s, scheduledArrivalTime=%s,
+                validFrom=%s, validTo=%s
+            WHERE id=%s
+        """, data)
+        conn.commit()
+        conn.close()
+        return redirect('/admin/dashboard')
+
+    cursor.execute("SELECT * FROM flight_schedule WHERE id = %s", (flight_id,))
+    flight = cursor.fetchone()
+    conn.close()
+    return render_template('edit_flight.html', flight=flight)
+
+@app.route('/admin/delete_flight/<int:flight_id>', methods=['POST'])
+def delete_flight(flight_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM flight_schedule WHERE id = %s", (flight_id,))
+    conn.commit()
+    conn.close()
+    return redirect('/admin/dashboard')
+
 
 if __name__ == '__main__':
+    app.secret_key = 'secretsuperkey12345@'
     app.run(debug=True)

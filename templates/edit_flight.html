@@ -1,0 +1,15 @@
+<h2>Edit Flight</h2>
+<form method="POST">
+    Flight Number: <input name="flightNumber" value="{{ flight.flightNumber }}"><br>
+    Airline: <input name="airline" value="{{ flight.airline }}"><br>
+    Origin: <input name="origin" value="{{ flight.origin }}"><br>
+    Destination: <input name="destination" value="{{ flight.destination }}"><br>
+    Day of Week: <input name="dayOfWeek" value="{{ flight.dayOfWeek }}"><br>
+    Scheduled Departure Time: 
+    <input type="datetime-local" name="scheduledDepartureTime" value="{{ flight.scheduledDepartureTime|replace(' ', 'T') }}"><br>
+    Scheduled Arrival Time: 
+    <input type="datetime-local" name="scheduledArrivalTime" value="{{ flight.scheduledArrivalTime|replace(' ', 'T') }}"><br>
+    Valid From: <input type="date" name="validFrom" value="{{ flight.validFrom }}"><br>
+    Valid To: <input type="date" name="validTo" value="{{ flight.validTo }}"><br>
+    <input type="submit" value="Update Flight">
+</form>
