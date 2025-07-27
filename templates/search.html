@@ -20,12 +20,12 @@
     <div class="hero-banner">
         <div class="overlay">
             <h2>Fly Smarter. Travel Better.</h2>
-            <p>Compare fares, manage bookings, and explore destinations—all in one place.</p>
+            <p>Compare fares and manage bookings — all in one place.</p>
         </div>
     </div>
 
     
-    <div class="container">
+    <div class="container-flex">
         <h1>Search Flights</h1>
         <form id="searchForm">
             <label for="source">From:</label>
@@ -48,7 +48,9 @@
             <button type="submit">Search</button>
         </form>
 
-        <div id="results"></div>
+        <div class="results-section">
+            <div id="results" class="flight-container"></div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
