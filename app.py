@@ -406,8 +406,13 @@ def edit_flight(flight_id):
 
     cursor.execute("SELECT * FROM flight_schedule WHERE id = %s", (flight_id,))
     flight = cursor.fetchone()
+
+    cursor.execute("SELECT price FROM flight_price WHERE flight_id = %s", (flight_id,))
+    price_row = cursor.fetchone()
+    price = price_row['price'] if price_row else 0
     conn.close()
-    return render_template('edit_flight.html', flight=flight)
+
+    return render_template('edit_flight.html', flight=flight, price=price)
 
 @app.route('/admin/delete_flight/<int:flight_id>', methods=['POST'])
 def delete_flight(flight_id):

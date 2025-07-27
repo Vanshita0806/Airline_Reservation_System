@@ -1,14 +1,109 @@
-<h2>Add New Flight</h2>
-<form method="POST">
-    Flight Number: <input name="flightNumber" required><br>
-    Airline: <input name="airline" required><br>
-    Origin: <input name="origin" required><br>
-    Destination: <input name="destination" required><br>
-    Day of Week: <input name="dayOfWeek" required><br>
-    Scheduled Departure Time: <input type="datetime-local" name="scheduledDepartureTime" required><br>
-    Scheduled Arrival Time: <input type="datetime-local" name="scheduledArrivalTime" required><br>
-    Valid From: <input type="date" name="validFrom" required><br>
-    Valid To: <input type="date" name="validTo" required><br>
-    Price: <input type="number" name="price" min =0 required><br>
-    <input type="submit" value="Add Flight">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Flight</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+            background-image: url('/static/background1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Add New Flight</h2>
+    <form method="POST">
+        <label for="flightNumber">Flight Number:</label>
+        <input type="text" name="flightNumber" id="flightNumber" required>
+
+        <label for="airline">Airline:</label>
+        <input type="text" name="airline" id="airline" required>
+
+        <label for="origin">Origin:</label>
+        <input type="text" name="origin" id="origin" required>
+
+        <label for="destination">Destination:</label>
+        <input type="text" name="destination" id="destination" required>
+
+        <label for="dayOfWeek">Day of Week:</label>
+        <input type="text" name="dayOfWeek" id="dayOfWeek" required>
+
+        <label for="scheduledDepartureTime">Scheduled Departure Time:</label>
+        <input type="datetime-local" name="scheduledDepartureTime" id="scheduledDepartureTime" required>
+
+        <label for="scheduledArrivalTime">Scheduled Arrival Time:</label>
+        <input type="datetime-local" name="scheduledArrivalTime" id="scheduledArrivalTime" required>
+
+        <label for="validFrom">Valid From:</label>
+        <input type="date" name="validFrom" id="validFrom" required>
+
+        <label for="validTo">Valid To:</label>
+        <input type="date" name="validTo" id="validTo" required>
+
+        <label for="price">Price:</label>
+        <input type="number" name="price" id="price" min="0" required>
+
+        <input type="submit" value="Add Flight">
+    </form>
+
+</body>
+</html>
+

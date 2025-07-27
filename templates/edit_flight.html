@@ -1,16 +1,108 @@
-<h2>Edit Flight</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Flight</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+            background-image: url('/static/image2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 25px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        input[type="submit"] {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>Edit Flight</h2>
 <form method="POST">
-    Flight Number: <input name="flightNumber" value="{{ flight.flightNumber }}"><br>
-    Airline: <input name="airline" value="{{ flight.airline }}"><br>
-    Origin: <input name="origin" value="{{ flight.origin }}"><br>
-    Destination: <input name="destination" value="{{ flight.destination }}"><br>
-    Day of Week: <input name="dayOfWeek" value="{{ flight.dayOfWeek }}"><br>
-    Scheduled Departure Time: 
-    <input type="datetime-local" name="scheduledDepartureTime" value="{{ flight.scheduledDepartureTime|replace(' ', 'T') }}"><br>
-    Scheduled Arrival Time: 
-    <input type="datetime-local" name="scheduledArrivalTime" value="{{ flight.scheduledArrivalTime|replace(' ', 'T') }}"><br>
-    Valid From: <input type="date" name="validFrom" value="{{ flight.validFrom }}"><br>
-    Valid To: <input type="date" name="validTo" value="{{ flight.validTo }}"><br>
-    Price: <input type="number" name="price" value="{{ flight.price }}"><br>
+    <label for="flightNumber">Flight Number:</label>
+    <input name="flightNumber" id="flightNumber" value="{{ flight.flightNumber }}">
+
+    <label for="airline">Airline:</label>
+    <input name="airline" id="airline" value="{{ flight.airline }}">
+
+    <label for="origin">Origin:</label>
+    <input name="origin" id="origin" value="{{ flight.origin }}">
+
+    <label for="destination">Destination:</label>
+    <input name="destination" id="destination" value="{{ flight.destination }}">
+
+    <label for="dayOfWeek">Day of Week:</label>
+    <input name="dayOfWeek" id="dayOfWeek" value="{{ flight.dayOfWeek }}">
+
+    <label for="scheduledDepartureTime">Scheduled Departure Time:</label>
+    <input type="datetime-local" name="scheduledDepartureTime" id="scheduledDepartureTime" value="{{ flight.scheduledDepartureTime|replace(' ', 'T') }}">
+
+    <label for="scheduledArrivalTime">Scheduled Arrival Time:</label>
+    <input type="datetime-local" name="scheduledArrivalTime" id="scheduledArrivalTime" value="{{ flight.scheduledArrivalTime|replace(' ', 'T') }}">
+
+    <label for="validFrom">Valid From:</label>
+    <input type="date" name="validFrom" id="validFrom" value="{{ flight.validFrom }}">
+
+    <label for="validTo">Valid To:</label>
+    <input type="date" name="validTo" id="validTo" value="{{ flight.validTo }}">
+
+    <label for="price">Price:</label>
+    <input type="number" name="price" id="price" value="{{ price }}">
+
     <input type="submit" value="Update Flight">
 </form>
+
+
+</body>
+</html>
