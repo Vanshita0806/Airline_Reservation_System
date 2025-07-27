@@ -169,7 +169,7 @@ def confirm_booking():
     """, (passenger_id, flight_id, departure_date))
     if cursor.fetchone():
         conn.close()
-        return "You have already booked this flight for this date!"
+        return render_template('booking_error.html')
     
     cursor.execute("""
         SELECT id FROM booking 
@@ -177,7 +177,7 @@ def confirm_booking():
     """, (flight_id, departure_date , seat_number))
     if cursor.fetchone():
         conn.close()
-        return "Seat already booked! Please select another seat."
+        return render_template('booking_error.html')
 
     cursor.execute("""
         INSERT INTO booking (passenger_id, flight_id, booking_date, seat_number, price, status, departure_date)
