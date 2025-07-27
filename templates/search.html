@@ -5,14 +5,26 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="login">
-        <a href="/user/login">
-        <button type="button">User Login</button>
-        </a>
-        <a href="/admin/login">
-            <button type="button">Admin Login</button>
-        </a>
+    <div class="navbar">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="logo">
+        <p>Welcome to <strong>NovaWings</strong> - an innovative and futuristic airline reservation platform!</p>
+        <div class="login-buttons">
+            <a href="/user/login">
+            <button type="button">View/Cancel Tickets</button>
+            </a>
+            <a href="/admin/login">
+                <button type="button">Admin Login</button>
+            </a>
+        </div>
     </div>
+    <div class="hero-banner">
+        <div class="overlay">
+            <h2>Fly Smarter. Travel Better.</h2>
+            <p>Compare fares, manage bookings, and explore destinations—all in one place.</p>
+        </div>
+    </div>
+
+    
     <div class="container">
         <h1>Search Flights</h1>
         <form id="searchForm">

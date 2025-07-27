@@ -79,6 +79,10 @@ CREATE TABLE admin (
 
 INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
 
+SHOW CREATE TABLE flight_schedule;
+
+SELECT * FROM flight_schedule
+WHERE origin ='Chandigarh' AND destination ='Delhi';
 
 
 
