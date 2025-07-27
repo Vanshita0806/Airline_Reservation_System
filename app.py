@@ -284,7 +284,7 @@ def cancel_booking():
 
     conn.commit()
     conn.close()
-    return "Booking cancelled. Please go back and refresh the dashboard."
+    return render_template('cancel_booking.html')
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
