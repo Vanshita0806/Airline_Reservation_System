@@ -99,9 +99,11 @@ def book():
 
     cursor.execute("""
         SELECT id FROM flight_schedule 
-        WHERE flightNumber = %s AND %s BETWEEN validFrom AND validTo
-    """, (flight_number, departure_date))
+        WHERE flightNumber = %s AND origin = %s AND destination = %s AND validFrom <= %s AND validTo >= %s LIMIT 1
+    """, (flight_number, origin, destination, departure_date, departure_date))
     flight = cursor.fetchone()
+    if not flight:
+        return "Flight not found.", 404
     flight_id = flight[0]
 
     total_seats = [f"{r}{c}" for r in range(1, 16) for c in "ABCD"]
@@ -146,10 +148,10 @@ def confirm_booking():
 
     cursor.execute("""
         SELECT id FROM flight_schedule 
-        WHERE flightNumber = %s  
-        AND %s BETWEEN validFrom AND validTo
+        WHERE flightNumber = %s AND origin = %s AND destination = %s  
+        AND validFrom <= %s AND validTo >= %s
         LIMIT 1
-    """, (flight_number, departure_date))
+    """, (flight_number, origin, destination, departure_date, departure_date))
     flights = cursor.fetchone()
     flight_id = flights[0]
 
@@ -181,8 +183,8 @@ def confirm_booking():
 
     cursor.execute("""
         INSERT INTO booking (passenger_id, flight_id, booking_date, seat_number, price, status, departure_date)
-        VALUES (%s, %s, %s - INTERVAL 10 DAY, %s, %s, 'Confirmed', %s)
-    """, (passenger_id, flight_id, departure_date, seat_number, price, departure_date))
+        VALUES (%s, %s, CURDATE(), %s, %s, 'Confirmed', %s)
+    """, (passenger_id, flight_id, seat_number, price, departure_date))
 
     conn.commit()
     conn.close()

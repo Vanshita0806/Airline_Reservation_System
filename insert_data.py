@@ -1,7 +1,8 @@
 import pandas as pd
 import mysql.connector
+from datetime import datetime, date
 
-df = pd.read_csv("cleaned_flight_schedule.csv")
+df = pd.read_csv("updated_flight_schedule.csv")
 
 conn = mysql.connector.connect(
     host = "localhost",
@@ -13,6 +14,12 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 for _,row in df.iterrows():
+
+    dep_time = datetime.strptime(row['scheduledDepartureTime'], "%H:%M:%S")
+    arr_time = datetime.strptime(row['scheduledArrivalTime'], "%H:%M:%S")
+    valid_from = pd.to_datetime(row['validFrom']).strftime('%Y-%m-%d')
+    valid_to = pd.to_datetime(row['validTo']).strftime('%Y-%m-%d')
+
     sql = """
     INSERT INTO flight_schedule(
     id, flightNumber, airline, origin, destination,
@@ -26,10 +33,10 @@ for _,row in df.iterrows():
         row['origin'],
         row['destination'],
         row['dayOfWeek'],
-        row['scheduledDepartureTime'],
-        row['scheduledArrivalTime'],
-        row['validFrom'],
-        row['validTo']
+        dep_time,
+        arr_time,
+        valid_from,
+        valid_to
     )
     cursor.execute(sql, values)
 
