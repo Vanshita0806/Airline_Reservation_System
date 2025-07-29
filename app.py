@@ -155,7 +155,7 @@ def confirm_booking():
     flights = cursor.fetchone()
     flight_id = flights[0]
 
-    cursor.execute("SELECT id FROM passenger WHERE email = %s AND phone = %s", (email, phone))
+    cursor.execute("SELECT id FROM passenger WHERE email = %s AND name = %s", (email, name))
     passenger = cursor.fetchone()
     
     if not passenger:
@@ -235,15 +235,15 @@ def download_ticket():
 def login():
     if request.method == 'POST':
         email = request.form['email']
-        phone = request.form['phone']
+        name = request.form['name']
         password = request.form['password']
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary = True)
         cursor.execute("""
             SELECT id, name FROM passenger 
-            WHERE email = %s AND phone = %s AND password = %s
-        """, (email, phone, password))
+            WHERE email = %s AND name = %s AND password = %s
+        """, (email, name, password))
         user = cursor.fetchone()
 
         if not user:

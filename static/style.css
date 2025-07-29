@@ -58,12 +58,14 @@ body {
 
 .hero-banner {
     position: relative;
-    width: 100%;
+    width: 80%;
     height: 280px;
     background-image: url('/static/banner.jpg');
     background-size: cover;
     background-position: center;
-    margin-top: 40px;
+    margin: 40px auto 0;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
 .hero-banner .overlay {

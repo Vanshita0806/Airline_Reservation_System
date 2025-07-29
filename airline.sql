@@ -84,7 +84,33 @@ SHOW CREATE TABLE flight_schedule;
 SELECT * FROM flight_schedule
 WHERE origin ='Chandigarh' AND destination ='Delhi';
 
+ALTER TABLE flight_schedule MODIFY COLUMN scheduledDepartureTime DATETIME;
+ALTER TABLE flight_schedule MODIFY COLUMN scheduledArrivalTime DATETIME;
 
+DELETE FROM booking;
+DELETE FROM flight_price;
+DELETE FROM flight_schedule;
+
+SELECT b.*, fs.origin, fs.destination
+FROM booking b
+JOIN flight_schedule fs ON b.flight_id = fs.id
+WHERE b.id = 967;  
+
+SELECT * FROM booking WHERE id = 967;
+SELECT flight_id FROM booking WHERE id = 967;
+SELECT * FROM flight_schedule WHERE id = 967;
+
+ALTER TABLE booking ADD COLUMN origin VARCHAR(50);
+ALTER TABLE booking ADD COLUMN destination VARCHAR(50);
+ALTER TABLE booking ADD COLUMN flightNumber VARCHAR(20);
+
+ALTER TABLE booking
+DROP COLUMN origin;
+
+ALTER TABLE booking
+DROP COLUMN destination;
+ALTER TABLE booking
+DROP COLUMN flightNumber;
 
 
 
