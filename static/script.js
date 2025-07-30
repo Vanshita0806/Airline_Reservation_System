@@ -16,7 +16,7 @@ document.getElementById('searchForm').addEventListener('submit', async function 
     resultDiv.innerHTML = '';
 
     if (flights.length === 0) {
-        resultDiv.innerHTML = '<p>No flights found.</p>';
+        resultDiv.innerHTML = '<p class="no-flights-msg">No flights found.</p>';
     } else {
         flights.forEach(flight => {
             

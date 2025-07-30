@@ -110,7 +110,7 @@ def book():
 
     cursor.execute("""
         SELECT seat_number FROM booking 
-        WHERE flight_id = %s AND departure_date = %s
+        WHERE flight_id = %s AND departure_date = %s AND status != 'Canceled'
     """, (flight_id,departure_date))
     booked = [row[0] for row in cursor.fetchall()]
     
